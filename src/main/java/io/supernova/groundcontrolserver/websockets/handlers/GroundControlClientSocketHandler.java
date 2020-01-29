@@ -22,7 +22,6 @@ public class GroundControlClientSocketHandler extends AbstractWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         this.socketSessions.add(session);
-        sendGreetingMessageToClient();
         super.afterConnectionEstablished(session);
     }
 
@@ -36,6 +35,7 @@ public class GroundControlClientSocketHandler extends AbstractWebSocketHandler {
         }
     }
 
+    // TODO: Example of how to communicate to the client without being first prevoked with a message from client.
     private void sendGreetingMessageToClient() throws InterruptedException {
         System.out.println("Session Established!! " + this.socketSessions.toString());
         Thread.sleep(10000);
