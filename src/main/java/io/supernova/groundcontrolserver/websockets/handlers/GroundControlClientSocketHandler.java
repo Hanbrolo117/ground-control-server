@@ -10,10 +10,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class GroundControlClientSocketHandler extends AbstractWebSocketHandler {
-    /**
-     * Manage Multiple Ground Control Sessions (e.g. Brenton and I are both testing out comms separately.
-     */
     private ArrayList<WebSocketSession> socketSessions;
+
+    // TODO: maybe manage a way so that clients can choose which connected agent they'd like to speak with, and prevent others
+    // TODO: from connecting to that agent if another client is already connected to it. Also even have ability to request access
+    // TODO: from another connected GC client or even allow for Ground to Ground comms (i.e. chat between to GC clients.)
+    private ArrayList<WebSocketSession> groundControlClients;
+    private ArrayList<WebSocketSession> agents;
+
+
 
     public GroundControlClientSocketHandler() {
         this.socketSessions = new ArrayList<WebSocketSession>();
@@ -22,6 +27,9 @@ public class GroundControlClientSocketHandler extends AbstractWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         this.socketSessions.add(session);
+
+        // TODO: make initial handshake with client and identify their type, i.e. Ground Control, or an Agent.
+
         super.afterConnectionEstablished(session);
     }
 
@@ -34,6 +42,43 @@ public class GroundControlClientSocketHandler extends AbstractWebSocketHandler {
             System.out.println("Could not find managed session with id: " + session.getId());
         }
     }
+
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        // If not assigned a client type
+        if (this.socketSessions.contains(session)) {
+            // Check if client is asserting it's type.
+            boolean isAssigned = false;
+            if (message.equals("gcc")) {
+                this.groundControlClients.add(session);
+                isAssigned = true;
+                // TODO: sent message with list of available agents to "pair" with.
+            } else if (message.equals("agent")) {
+                this.agents.add(session);
+                isAssigned = true;
+                // TODO: notify all GCC of new connected agent that is available for "pairing".
+            }
+            if (isAssigned) this.socketSessions.remove(session);
+        } else if (this.groundControlClients.contains(session)) {
+            // TODO: Handle GCC message
+            handleGroundControlClient(session);
+        } else if (this.agents.contains(session)) {
+            // TODO: Handle Agent message
+            handleAgentClient(session);
+        }
+
+
+        System.out.println("New Text Message Received: " + message);
+        session.sendMessage(message);
+    }
+
+    @Override
+    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
+        String convertedMessage = new String(message.getPayload().array(), StandardCharsets.UTF_8);
+        System.out.println("New Binary Message Received: " + convertedMessage);
+        session.sendMessage(message);
+    }
+
 
     // TODO: Example of how to communicate to the client without being first prevoked with a message from client.
     private void sendGreetingMessageToClient() throws InterruptedException {
@@ -48,16 +93,7 @@ public class GroundControlClientSocketHandler extends AbstractWebSocketHandler {
         });
     }
 
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        System.out.println("New Text Message Received: " + message);
-        session.sendMessage(message);
-    }
+    private void handleGroundControlClient(WebSocketSession clientSession) {}
 
-    @Override
-    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
-        String convertedMessage = new String(message.getPayload().array(), StandardCharsets.UTF_8);
-        System.out.println("New Binary Message Received: " + convertedMessage);
-        session.sendMessage(message);
-    }
+    private void handleAgentClient(WebSocketSession agentSession) {}
 }
