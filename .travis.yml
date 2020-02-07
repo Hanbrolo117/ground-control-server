@@ -1,13 +1,9 @@
 language: java
 
-java:
-  - "1.8"
-
-sudo: required
 services: docker
 
 script:
-  - docker --tag ground_control_server .
+  - docker -t ground_control_server .
 
 after_script:
   - docker images
