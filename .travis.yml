@@ -2,6 +2,11 @@ language: java
 
 services: docker
 
+before_script:
+  - sudo apt update -y
+  - sudo apt install --only-upgrade docker-ce -y
+  - docker info
+
 script:
   - docker -t ground_control_server .
 
