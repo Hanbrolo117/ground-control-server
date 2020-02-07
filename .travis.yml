@@ -1,0 +1,9 @@
+language: java
+
+services: docker
+
+script:
+  - docker build -t ground_control_server .
+
+after_script:
+  - docker images

@@ -4,9 +4,15 @@ plugins {
 	id 'java'
 }
 
+apply plugin: 'java'
+
 group = 'io.supernova'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = '1.8'
+
+bootJar {
+	mainClassName = 'io.supernova.groundcontrolserver.Application'
+}
 
 repositories {
 	mavenCentral()
