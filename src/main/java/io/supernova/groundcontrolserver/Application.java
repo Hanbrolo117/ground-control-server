@@ -6,10 +6,10 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @SpringBootApplication
-public class GroundControlServerApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GroundControlServerApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 }

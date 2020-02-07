@@ -3,5 +3,11 @@ language: java
 java:
   - "1.8"
 
+sudo: required
+services: docker
+
 script:
-  - echo "Hello, World!"
+  - docker --tag ground_control_server .
+
+after_script:
+  - docker images
