@@ -1,9 +1,28 @@
 language: java
-
 services: docker
-
+install: skip
 script:
+  # Ensure that the build passes for this branch.
   - docker build --tag ground_control_server .
 
 after_script:
   - docker images
+env:
+  global:
+  - secure: o5N5xnCfiqRY8yPRvX+15QzPy4oQ95hD0BW8Tcx0U+XSBwkz2beoTytjkUB7+GXjMMI5pM2yRMCPjhusfKgdBP7Xa4p2Iu7E0XpXquav19MR6LlzJtI89XrRr8XTMghz8Z9z/NPmWPaE52PFIQzXiYoGcHGGJ0ukaijyLbMFyoy1ku3yaWSsHPfxB5oUJzI/OPO2ARX3QX+AobKWMznx/9K1IHUDSb88IGycW0zf6F7TvfKzQih51sdk6+F0GxwUhIe8nNS45VguSCMcw0EPfWo85mqS9QrmfJvESzVa7RH3povAv5NoiSdy1JXUkhVt7a9sqi+/raoDdi1VvRM/Zoll9hvYmKT/gl6x6JmdP1BhRB/ioY6hFB9lNqpSblWdF3F8ULiuJkx8XemUDqsVzDB/HcN6Mal8MDqdmelKbqAUlUWRjbJCeXf+jdP/OenoprIzeysOnOma1++BzMIx8qIaLnJctgfYc8TuUs+9gxxxZKT9znvSKoGMQQ9zZE1PLn9C/KtrRZsUf3PEhr1joRz43z9vkpAMovmm92x9XnLZzgGDVOgUqS4tvnZp8QjtLurmHqt08fuJMRtJywa7wCATopnE8bqEFKn8zHVItI06rXHU+qjQTl+VFpADGidxljHDeBgUhqq9zkSQUTAeaMf7xJC+VGntjAE+GQXf1CI=
+  - secure: egZNTzsC1/056KMi754IoAAo/qG9I1BpkdtS3/P7fM85VTI9t3ANGBTGVd7yQfvsb3rumvtInLlxaC3WG2G3vGBXaAlkK+7xTwa4Yr4xqJewHfCCqQjKhIrwPMEKftyyxm8s9g439kn0Z0Ocuhg6WMzZ93SNBDChr48SWZxN7QyyNU4Zaz98ANsDDCTNViikrW6c9969dYxXeGbXdQUXXKgNLmLgsZVjHi12MU3ANtFKOn2oNyE+lUO8RCiylSi0OGYUSmagC3+T8WGSdKwEvEnpP2wzMAI2dz6q4j8G/YWno/uixCeaTIIjLrfVY6vuyrxxE4fKKFAdil9/kAstXbFUP88Wqfk1pxmagMWS5wBcUD1AdXVavri3PxNxYpttiAAzEba6CHXpX2l1rx5uUhmLMRtb2NeFKKue1TaOm7WSX9rR+vZZBCHDTzxCRslZbV0XCQg6ojv/uqLbaLOEpUJPz66+jHwgi3xRwk0ia8oRDFA7Xsa8KsuHmbUDiy7KodY8qzlF3KYClWWZMQrEp4J3fadphYXTJVgv4mYfEI/gZI8E9GxhYdM3S8iHNG1faCiSw8zNNNmuIDllNN+5Fwbf8ZMTWWH6PCGXMTLui3QjeCllVDrub8uG/xK5fAva/nDmhTOko9TxTnznpwyh5MDyumENeXqZfyqbtGLDIHs=
+
+stages:
+  - test
+  - deploy
+
+jobs:
+  include:
+    - stage: deploy
+      name: "Deploy docker image to Docker Hub Registry"
+      if: branch = master
+      install: skip
+      script:
+        - docker login -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
+        - docker build --tag ground_control_server .
+        - docker push $DOCKER_USER/ground-control-server
