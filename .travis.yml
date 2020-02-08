@@ -3,7 +3,7 @@ services: docker
 install: skip
 script:
   # Ensure that the build passes for this branch.
-  - docker build --tag ground_control_server .
+  - docker build --tag $DOCKER_USER/ground_control_server:latest .
 
 after_script:
   - docker images
@@ -20,9 +20,9 @@ jobs:
   include:
     - stage: deploy
       name: "Deploy docker image to Docker Hub Registry"
-      if: branch = master
       install: skip
       script:
         - docker login -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
         - docker build --tag ground_control_server .
-        - docker push $DOCKER_USER/ground-control-server
+        - docker push $DOCKER_USER/ground-control-server:latest
+      if: branch = master
