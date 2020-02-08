@@ -17,7 +17,7 @@ env:
 stages:
   - test
   - name: deploy
-    if: branch = master
+    if: branch = master AND type = push
 
 jobs:
   include:
@@ -34,4 +34,3 @@ jobs:
         - docker login -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
         - docker build --tag $DOCKER_USER/ground_control_server:latest .
         - docker push $DOCKER_USER/ground-control-server:latest
-      if: branch = master
