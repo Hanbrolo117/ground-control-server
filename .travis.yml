@@ -32,5 +32,5 @@ jobs:
       install: skip
       script:
         - docker login -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
-        - docker build --tag $DOCKER_USER/ground_control_server:latest .
+        - docker build --tag $DOCKER_USER/ground-control-server:latest .
         - docker push $DOCKER_USER/ground-control-server:latest
