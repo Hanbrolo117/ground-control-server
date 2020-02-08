@@ -50,7 +50,7 @@ public class GroundControlClientSocketHandler extends AbstractWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        System.out.println("New Text Message Received: " + message);
+        System.out.println("New Text Message Received: " + message.getPayload());
         session.sendMessage(message);
     }
 
