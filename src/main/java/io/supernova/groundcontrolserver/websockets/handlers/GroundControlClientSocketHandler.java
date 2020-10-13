@@ -29,7 +29,7 @@ public class GroundControlClientSocketHandler extends AbstractWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         boolean didRemove = this.socketSessions.remove(session);
         if (didRemove) {
-            System.out.println("Removed Closed Session with id: " + session.getId());
+            System.out.println("Removed Closed Session with id: " , session.getId());
         } else {
             System.out.println("Could not find managed session with id: " + session.getId());
         }
